@@ -1,53 +1,53 @@
-.sidebar {
+import { styled } from '@linaria/react';
+import { ellipsis, theme } from '@/shared/ui/theme';
+
+export const Sidebar = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
-  background: var(--color-surface);
-}
+  background: ${theme.surface};
+`;
 
-.header {
+export const Header = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
   padding: 12px 12px 8px 20px;
-}
+`;
 
-.heading {
+export const Heading = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
   min-width: 0;
-}
+`;
 
-.title {
-  margin: 0;
+export const Title = styled.div`
   font-size: 22px;
   font-weight: 700;
-}
+`;
 
-.instance {
-  overflow: hidden;
+export const Instance = styled.div`
   font-size: 12px;
-  color: var(--color-text-tertiary);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+  color: ${theme.textTertiary};
+  ${ellipsis}
+`;
 
-.form {
+export const FormSlot = styled.div`
   padding: 4px 12px 8px;
-}
+`;
 
-.list {
+export const List = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
   gap: 2px;
   padding: 4px 8px 12px;
   overflow-y: auto;
-}
+`;
 
-.empty {
+export const Empty = styled.div`
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -55,10 +55,10 @@
   justify-content: center;
   gap: 8px;
   padding: 24px;
-  color: var(--color-text-tertiary);
+  color: ${theme.textTertiary};
   text-align: center;
-}
+`;
 
-.empty p {
-  margin: 0 0 8px;
-}
+export const EmptyText = styled.div`
+  margin-bottom: 8px;
+`;

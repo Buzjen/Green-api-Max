@@ -53,7 +53,7 @@ CORS: GREEN-API отвечает `Access-Control-Allow-Origin: *`, поэтом�
 
 ## Архитектура
 
-Стек: Vite + React 18 + TypeScript + effector, без UI-библиотек и роутера. Код разложен по слоям [Feature-Sliced Design](https://feature-sliced.design/), границы проверяет `steiger`.
+Стек: Vite + React 18 + TypeScript + effector, стили на [Linaria](https://linaria.dev/) (zero-runtime styled components), без UI-библиотек и роутера. Код разложен по слоям [Feature-Sliced Design](https://feature-sliced.design/), границы проверяет `steiger`.
 
 ```
 src/
@@ -73,14 +73,23 @@ src/
   shared/
     api/green-api   4 функции на fetch, ApiError, тексты ошибок
     config          resolveApiUrl
-    lib             phone, storage (persist), date, cx, testing (фикстуры тестов)
-    ui              Button, Input, ErrorText, Avatar, Spinner, иконки
+    lib             phone, storage (persist), date, testing (фикстуры тестов)
+    ui              Button, Input, ErrorText, Avatar, Spinner, иконки;
+                    ui/theme — токены темы (CSS-переменные), media, миксины
 ```
 
 Принципы:
 - Бизнес-логика живёт в `model/` на effector. Компоненты читают сторы через `useUnit` и вызывают события.
 - `shared/api` ничего не знает про effector. Креды подставляет в эффекты `sessionModel.withCredentials(fx)`: хелпер возвращает событие, которое вызывает эффект с кредами текущей сессии и игнорируется без неё.
 - Сущности не импортируют друг друга. Их связывают фичи через `sample`, каждая сущность экспортирует свой `reset`.
+
+### Стили
+
+- Компоненты стилизуются через `styled` из `@linaria/react`. Стили лежат в `*.styles.ts` рядом с компонентом. На этапе сборки Linaria (плагин `@wyw-in-js/vite`) извлекает их в обычный CSS, в рантайме остаются только классы, а динамические значения становятся CSS-переменными.
+- Цвета и тени берутся из `shared/ui/theme`: `color: ${theme.accent}` превращается в `var(--accent)`. Значения светлой и тёмной темы объявлены там же, а в `:root` их выводит `app/styles/global.ts`.
+- Варианты и состояния задаются data-атрибутами (`data-variant`, `data-active`, `data-direction`), а не отдельными классами.
+- Модули `*.styles.ts` импортируют тему из `@/shared/ui/theme`, а не из barrel `@/shared/ui`. Иначе Linaria при сборке вычисляет весь barrel вместе с React-компонентами, и сборка падает.
+- Разметка минимальная: `div`/`span` плюс элементы с поведением (`button`, `form`, `input`, `textarea`, `label`, `a`, `details`). У кнопок-иконок есть подсказка в `title`.
 
 ### Цикл получения
 

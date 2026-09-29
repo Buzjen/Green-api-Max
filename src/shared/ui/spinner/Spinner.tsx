@@ -1,12 +1,17 @@
-import styles from './Spinner.module.css';
+import { styled } from '@linaria/react';
 
-export function Spinner({ size = 16 }: { size?: number }) {
-  return (
-    <span
-      className={styles.spinner}
-      style={{ width: size, height: size }}
-      role="status"
-      aria-label="Загрузка"
-    />
-  );
-}
+export const Spinner = styled.span`
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`;

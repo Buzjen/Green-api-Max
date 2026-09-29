@@ -7,7 +7,7 @@ import {
   chatCreateRequested,
   formClosed,
 } from '../model/create-chat';
-import styles from './NewChatForm.module.css';
+import { Form, Header, Title } from './NewChatForm.styles';
 
 export function NewChatForm() {
   const [error, pending, create, close] = useUnit([
@@ -24,13 +24,13 @@ export function NewChatForm() {
   };
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit}>
-      <div className={styles.header}>
-        <span className={styles.title}>Новый чат</span>
-        <Button variant="icon" onClick={close} aria-label="Закрыть">
+    <Form onSubmit={handleSubmit}>
+      <Header>
+        <Title>Новый чат</Title>
+        <Button variant="icon" onClick={close} title="Закрыть">
           <CloseIcon width={18} height={18} />
         </Button>
-      </div>
+      </Header>
       <Input
         type="tel"
         name="phone"
@@ -45,6 +45,6 @@ export function NewChatForm() {
       <Button type="submit" block disabled={pending || !phone.trim()}>
         {pending ? <Spinner /> : 'Создать чат'}
       </Button>
-    </form>
+    </Form>
   );
 }

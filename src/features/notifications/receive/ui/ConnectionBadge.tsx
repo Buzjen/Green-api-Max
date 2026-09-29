@@ -1,7 +1,6 @@
 import { useUnit } from 'effector-react';
 import { $connectionStatus } from '../model/receive';
-import { cx } from '@/shared/lib/cx';
-import styles from './ConnectionBadge.module.css';
+import { Badge, Dot, Label } from './ConnectionBadge.styles';
 
 const LABEL = {
   online: 'В сети',
@@ -11,13 +10,9 @@ const LABEL = {
 export function ConnectionBadge() {
   const status = useUnit($connectionStatus);
   return (
-    <span
-      className={cx(styles.badge, styles[status])}
-      role="status"
-      title={LABEL[status]}
-    >
-      <span className={styles.dot} />
-      <span className={styles.label}>{LABEL[status]}</span>
-    </span>
+    <Badge data-status={status} title={LABEL[status]}>
+      <Dot />
+      <Label>{LABEL[status]}</Label>
+    </Badge>
   );
 }

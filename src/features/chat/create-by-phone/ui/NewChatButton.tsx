@@ -5,13 +5,7 @@ import { $isFormOpen, formOpened } from '../model/create-chat';
 export function NewChatButton() {
   const [isOpen, open] = useUnit([$isFormOpen, formOpened]);
   return (
-    <Button
-      variant="icon"
-      onClick={open}
-      disabled={isOpen}
-      title="Новый чат"
-      aria-label="Новый чат"
-    >
+    <Button variant="icon" onClick={open} disabled={isOpen} title="Новый чат">
       <PlusIcon />
     </Button>
   );

@@ -1,11 +1,20 @@
 import { useUnit } from 'effector-react';
 import { chatModel } from '@/entities/chat';
-import { ConnectionBadge } from '@/features/notifications/receive';
 import { MessageInput } from '@/features/message/send';
+import { ConnectionBadge } from '@/features/notifications/receive';
 import { formatPhone } from '@/shared/lib/phone';
 import { Avatar, BackIcon, Button, ChatIcon } from '@/shared/ui';
-import { cx } from '@/shared/lib/cx';
-import styles from './ChatWindow.module.css';
+import {
+  BackSlot,
+  Footer,
+  Header,
+  Info,
+  Pill,
+  Placeholder,
+  Subtitle,
+  Title,
+  Window,
+} from './ChatWindow.styles';
 import { MessageList } from './MessageList';
 
 export function ChatWindow() {
@@ -16,41 +25,42 @@ export function ChatWindow() {
 
   if (!chat) {
     return (
-      <section className={cx(styles.window, styles.placeholder)}>
+      <Placeholder>
         <ChatIcon width={48} height={48} />
-        <p>Выберите чат или создайте новый</p>
-      </section>
+        <Pill>Выберите чат или создайте новый</Pill>
+      </Placeholder>
     );
   }
 
   const phone = chat.phone ? formatPhone(chat.phone) : null;
 
   return (
-    <section className={styles.window}>
-      <header className={styles.header}>
-        <Button
-          variant="icon"
-          className={styles.back}
-          onClick={() => selectChat(null)}
-          aria-label="Назад к чатам"
-        >
-          <BackIcon />
-        </Button>
+    <Window>
+      <Header>
+        <BackSlot>
+          <Button
+            variant="icon"
+            onClick={() => selectChat(null)}
+            title="Назад к чатам"
+          >
+            <BackIcon />
+          </Button>
+        </BackSlot>
         <Avatar name={chat.title} seed={chat.chatId} size={40} />
-        <div className={styles.info}>
-          <span className={styles.title}>{chat.title}</span>
-          <span className={styles.subtitle}>
+        <Info>
+          <Title>{chat.title}</Title>
+          <Subtitle>
             {phone && phone !== chat.title && <span>{phone}</span>}
             <ConnectionBadge />
-          </span>
-        </div>
-      </header>
+          </Subtitle>
+        </Info>
+      </Header>
 
       <MessageList key={chat.chatId} />
 
-      <footer className={styles.footer}>
+      <Footer>
         <MessageInput key={chat.chatId} />
-      </footer>
-    </section>
+      </Footer>
+    </Window>
   );
 }

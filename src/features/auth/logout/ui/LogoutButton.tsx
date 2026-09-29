@@ -16,7 +16,6 @@ export function LogoutButton() {
           logout();
       }}
       title="Выйти"
-      aria-label="Выйти"
     >
       <LogoutIcon />
     </Button>

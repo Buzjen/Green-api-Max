@@ -4,8 +4,13 @@ import { MessageBubble } from '@/entities/message';
 import { sendMessageModel } from '@/features/message/send';
 import { formatDay, isSameDay } from '@/shared/lib/date';
 import { $activeMessages } from '../model/chat-window';
-import { cx } from '@/shared/lib/cx';
-import styles from './ChatWindow.module.css';
+import {
+  Day,
+  Messages,
+  MessagesInner,
+  NoMessages,
+  Pill,
+} from './ChatWindow.styles';
 
 /**
  * Насколько близко к низу (px) нужно быть,
@@ -35,29 +40,27 @@ export function MessageList() {
 
   if (messages.length === 0) {
     return (
-      <div className={cx(styles.messages, styles.noMessages)}>
-        <span>Нет сообщений</span>
-      </div>
+      <NoMessages>
+        <Pill>Нет сообщений</Pill>
+      </NoMessages>
     );
   }
 
   return (
-    <div className={styles.messages} ref={listRef} onScroll={handleScroll}>
-      <div className={styles.messagesInner}>
+    <Messages ref={listRef} onScroll={handleScroll}>
+      <MessagesInner>
         {messages.map((message, index) => {
           const showDay =
             index === 0 ||
             !isSameDay(messages[index - 1].timestamp, message.timestamp);
           return (
             <Fragment key={message.id}>
-              {showDay && (
-                <div className={styles.day}>{formatDay(message.timestamp)}</div>
-              )}
+              {showDay && <Day>{formatDay(message.timestamp)}</Day>}
               <MessageBubble message={message} onRetry={retry} />
             </Fragment>
           );
         })}
-      </div>
-    </div>
+      </MessagesInner>
+    </Messages>
   );
 }

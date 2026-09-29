@@ -3,7 +3,7 @@ import type { ChangeEvent, FormEvent } from 'react';
 import { Button, ErrorText, Input } from '@/shared/ui';
 import type { LoginFormValues } from '../lib/validate';
 import { $error, $values, fieldChanged, loginSubmitted } from '../model/login';
-import styles from './LoginForm.module.css';
+import { Advanced, Form } from './LoginForm.styles';
 
 export function LoginForm() {
   const [values, error, change, submit] = useUnit([
@@ -26,7 +26,7 @@ export function LoginForm() {
   };
 
   return (
-    <form className={styles.form} onSubmit={handleSubmit} noValidate>
+    <Form onSubmit={handleSubmit} noValidate>
       <Input
         label="idInstance"
         name="idInstance"
@@ -46,7 +46,7 @@ export function LoginForm() {
         value={apiTokenInstance}
         onChange={handleChange}
       />
-      <details className={styles.advanced}>
+      <Advanced>
         <summary>Дополнительно</summary>
         <Input
           label="apiUrl"
@@ -56,11 +56,11 @@ export function LoginForm() {
           value={apiUrl}
           onChange={handleChange}
         />
-      </details>
+      </Advanced>
       <ErrorText>{error}</ErrorText>
       <Button type="submit" block disabled={!idInstance || !apiTokenInstance}>
         Войти
       </Button>
-    </form>
+    </Form>
   );
 }

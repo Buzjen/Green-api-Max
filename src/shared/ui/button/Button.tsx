@@ -1,28 +1,22 @@
 import type { ButtonHTMLAttributes } from 'react';
-import { cx } from '@/shared/lib/cx';
-import styles from './Button.module.css';
+import { StyledButton } from './Button.styles';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'icon';
+  variant?: 'primary' | 'secondary' | 'icon';
   block?: boolean;
 }
 
 export function Button({
   variant = 'primary',
   block = false,
-  className,
   type = 'button',
   ...props
 }: ButtonProps) {
   return (
-    <button
+    <StyledButton
       type={type}
-      className={cx(
-        styles.button,
-        styles[variant],
-        block && styles.block,
-        className,
-      )}
+      data-variant={variant}
+      data-block={block}
       {...props}
     />
   );

@@ -3,8 +3,13 @@ import { useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { MAX_MESSAGE_LENGTH } from '@/shared/api';
 import { SendIcon } from '@/shared/ui';
 import { messageSendRequested } from '../model/send';
-import { cx } from '@/shared/lib/cx';
-import styles from './MessageInput.module.css';
+import {
+  Container,
+  Counter,
+  Field,
+  SendButton,
+  Textarea,
+} from './MessageInput.styles';
 
 export function MessageInput() {
   const send = useUnit(messageSendRequested);
@@ -41,35 +46,31 @@ export function MessageInput() {
   };
 
   return (
-    <div className={styles.container}>
-      <div className={styles.field}>
-        <textarea
+    <Container>
+      <Field>
+        <Textarea
           ref={textareaRef}
-          className={styles.textarea}
           rows={1}
           placeholder="Сообщение"
           value={text}
           onChange={(event) => setText(event.target.value)}
           onKeyDown={handleKeyDown}
-          aria-label="Текст сообщения"
           autoFocus
         />
         {text.length > MAX_MESSAGE_LENGTH - 500 && (
-          <span className={cx(styles.counter, tooLong && styles.over)}>
+          <Counter data-over={tooLong}>
             {text.length}/{MAX_MESSAGE_LENGTH}
-          </span>
+          </Counter>
         )}
-      </div>
-      <button
+      </Field>
+      <SendButton
         type="button"
-        className={styles.send}
         onClick={submit}
         disabled={!canSend}
-        aria-label="Отправить"
         title="Отправить (Enter)"
       >
         <SendIcon />
-      </button>
-    </div>
+      </SendButton>
+    </Container>
   );
 }

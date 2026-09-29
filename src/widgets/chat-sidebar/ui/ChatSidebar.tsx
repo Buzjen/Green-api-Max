@@ -10,7 +10,17 @@ import {
 import { formatRecent } from '@/shared/lib/date';
 import { Button, ChatIcon } from '@/shared/ui';
 import { $items } from '../model/sidebar';
-import styles from './ChatSidebar.module.css';
+import {
+  Empty,
+  EmptyText,
+  FormSlot,
+  Header,
+  Heading,
+  Instance,
+  List,
+  Sidebar,
+  Title,
+} from './ChatSidebar.styles';
 
 export function ChatSidebar() {
   const [items, activeChatId, selectChat, isFormOpen, openForm, credentials] =
@@ -24,28 +34,24 @@ export function ChatSidebar() {
     ]);
 
   return (
-    <aside className={styles.sidebar}>
-      <header className={styles.header}>
-        <div className={styles.heading}>
-          <h1 className={styles.title}>Чаты</h1>
-          {credentials && (
-            <span className={styles.instance}>
-              Инстанс {credentials.idInstance}
-            </span>
-          )}
-        </div>
+    <Sidebar>
+      <Header>
+        <Heading>
+          <Title>Чаты</Title>
+          {credentials && <Instance>Инстанс {credentials.idInstance}</Instance>}
+        </Heading>
         <NewChatButton />
         <LogoutButton />
-      </header>
+      </Header>
 
       {isFormOpen && (
-        <div className={styles.form}>
+        <FormSlot>
           <NewChatForm />
-        </div>
+        </FormSlot>
       )}
 
       {items.length > 0 ? (
-        <nav className={styles.list} aria-label="Список чатов">
+        <List>
           {items.map((item) => (
             <ChatListItem
               key={item.chatId}
@@ -57,18 +63,18 @@ export function ChatSidebar() {
               onSelect={selectChat}
             />
           ))}
-        </nav>
+        </List>
       ) : (
         !isFormOpen && (
-          <div className={styles.empty}>
+          <Empty>
             <ChatIcon width={40} height={40} />
-            <p>Чатов пока нет</p>
+            <EmptyText>Чатов пока нет</EmptyText>
             <Button variant="secondary" onClick={openForm}>
               Новый чат
             </Button>
-          </div>
+          </Empty>
         )
       )}
-    </aside>
+    </Sidebar>
   );
 }

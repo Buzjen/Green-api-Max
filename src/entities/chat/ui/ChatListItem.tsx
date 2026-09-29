@@ -1,6 +1,5 @@
 import { Avatar } from '@/shared/ui';
-import { cx } from '@/shared/lib/cx';
-import styles from './ChatListItem.module.css';
+import { Body, Item, Preview, Row, Time, Title } from './ChatListItem.styles';
 
 interface ChatListItemProps {
   chatId: string;
@@ -20,20 +19,15 @@ export function ChatListItem({
   onSelect,
 }: ChatListItemProps) {
   return (
-    <button
-      type="button"
-      className={cx(styles.item, active && styles.active)}
-      onClick={() => onSelect(chatId)}
-      aria-current={active}
-    >
+    <Item type="button" data-active={active} onClick={() => onSelect(chatId)}>
       <Avatar name={title} seed={chatId} />
-      <span className={styles.body}>
-        <span className={styles.row}>
-          <span className={styles.title}>{title}</span>
-          <span className={styles.time}>{time}</span>
-        </span>
-        <span className={styles.preview}>{preview}</span>
-      </span>
-    </button>
+      <Body>
+        <Row>
+          <Title>{title}</Title>
+          <Time>{time}</Time>
+        </Row>
+        <Preview>{preview}</Preview>
+      </Body>
+    </Item>
   );
 }

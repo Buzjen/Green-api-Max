@@ -13,6 +13,8 @@
     "format:check": "prettier --check src \"*.{js,ts}\""
   },
   "dependencies": {
+    "@linaria/core": "^8.2.0",
+    "@linaria/react": "^8.2.0",
     "effector": "^23.4.4",
     "effector-react": "^23.3.0",
     "react": "^18.3.1",
@@ -25,6 +27,7 @@
     "@types/react": "^18.3.31",
     "@types/react-dom": "^18.3.7",
     "@vitejs/plugin-react": "^6.1.1",
+    "@wyw-in-js/vite": "^2.5.1",
     "eslint": "^10.11.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "globals": "^17.12.0",
