@@ -23,6 +23,9 @@ jobs:
         with:
           node-version: 24
           cache: npm
+      # npm до 11.5 не принимает lock-файл, записанный npm 11.5+:
+      # требует в нём optional peer-зависимости @emnapi/*
+      - run: npm install -g npm@^11.5
       - run: npm ci
       - run: npm test
       # Сайт открывается по адресу /<имя репозитория>/, а не из корня домена
