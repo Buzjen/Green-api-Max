@@ -17,9 +17,3 @@
 .title {
   font-weight: 600;
 }
-
-.error {
-  margin: 0;
-  font-size: 13px;
-  color: var(--color-danger);
-}

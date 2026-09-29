@@ -2,16 +2,22 @@ import { useUnit } from 'effector-react';
 import { Fragment, useLayoutEffect, useRef } from 'react';
 import { MessageBubble } from '@/entities/message';
 import { sendMessageModel } from '@/features/message/send';
+import { formatDay, isSameDay } from '@/shared/lib/date';
 import { $activeMessages } from '../model/chat-window';
+import { cx } from '@/shared/lib/cx';
 import styles from './ChatWindow.module.css';
 
-const dayFormat = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'long' });
-
-/** Насколько близко к низу (px) нужно быть, чтобы новые сообщения прокручивали ленту. */
+/**
+ * Насколько близко к низу (px) нужно быть,
+ * чтобы новые сообщения прокручивали ленту.
+ */
 const STICK_THRESHOLD = 120;
 
 export function MessageList() {
-  const [messages, retry] = useUnit([$activeMessages, sendMessageModel.retryRequested]);
+  const [messages, retry] = useUnit([
+    $activeMessages,
+    sendMessageModel.retryRequested,
+  ]);
   const listRef = useRef<HTMLDivElement>(null);
   const stickToBottom = useRef(true);
 
@@ -29,7 +35,7 @@ export function MessageList() {
 
   if (messages.length === 0) {
     return (
-      <div className={`${styles.messages} ${styles.noMessages}`}>
+      <div className={cx(styles.messages, styles.noMessages)}>
         <span>Нет сообщений</span>
       </div>
     );
@@ -39,11 +45,14 @@ export function MessageList() {
     <div className={styles.messages} ref={listRef} onScroll={handleScroll}>
       <div className={styles.messagesInner}>
         {messages.map((message, index) => {
-          const day = dayFormat.format(message.timestamp);
-          const showDay = index === 0 || dayFormat.format(messages[index - 1].timestamp) !== day;
+          const showDay =
+            index === 0 ||
+            !isSameDay(messages[index - 1].timestamp, message.timestamp);
           return (
             <Fragment key={message.id}>
-              {showDay && <div className={styles.day}>{day}</div>}
+              {showDay && (
+                <div className={styles.day}>{formatDay(message.timestamp)}</div>
+              )}
               <MessageBubble message={message} onRetry={retry} />
             </Fragment>
           );

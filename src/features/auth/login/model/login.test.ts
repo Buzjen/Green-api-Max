@@ -3,8 +3,15 @@ import { describe, expect, it } from 'vitest';
 import { sessionModel } from '@/entities/session';
 import { $error, fieldChanged, loginSubmitted } from './login';
 
-async function fill(scope: ReturnType<typeof fork>, idInstance: string, apiTokenInstance: string) {
-  await allSettled(fieldChanged, { scope, params: { name: 'idInstance', value: idInstance } });
+async function fill(
+  scope: ReturnType<typeof fork>,
+  idInstance: string,
+  apiTokenInstance: string,
+) {
+  await allSettled(fieldChanged, {
+    scope,
+    params: { name: 'idInstance', value: idInstance },
+  });
   await allSettled(fieldChanged, {
     scope,
     params: { name: 'apiTokenInstance', value: apiTokenInstance },
@@ -33,7 +40,10 @@ describe('login', () => {
 
   it('показывает причину отказа API', async () => {
     const scope = fork();
-    await allSettled(sessionModel.sessionFailed, { scope, params: 'Неверные данные' });
+    await allSettled(sessionModel.sessionFailed, {
+      scope,
+      params: 'Неверные данные',
+    });
     expect(scope.getState($error)).toBe('Неверные данные');
   });
 });

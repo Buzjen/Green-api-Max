@@ -3,6 +3,7 @@ import { useLayoutEffect, useRef, useState, type KeyboardEvent } from 'react';
 import { MAX_MESSAGE_LENGTH } from '@/shared/api';
 import { SendIcon } from '@/shared/ui';
 import { messageSendRequested } from '../model/send';
+import { cx } from '@/shared/lib/cx';
 import styles from './MessageInput.module.css';
 
 export function MessageInput() {
@@ -29,7 +30,11 @@ export function MessageInput() {
   };
 
   const handleKeyDown = (event: KeyboardEvent<HTMLTextAreaElement>) => {
-    if (event.key === 'Enter' && !event.shiftKey && !event.nativeEvent.isComposing) {
+    if (
+      event.key === 'Enter' &&
+      !event.shiftKey &&
+      !event.nativeEvent.isComposing
+    ) {
       event.preventDefault();
       submit();
     }
@@ -50,7 +55,7 @@ export function MessageInput() {
           autoFocus
         />
         {text.length > MAX_MESSAGE_LENGTH - 500 && (
-          <span className={`${styles.counter} ${tooLong ? styles.over : ''}`}>
+          <span className={cx(styles.counter, tooLong && styles.over)}>
             {text.length}/{MAX_MESSAGE_LENGTH}
           </span>
         )}

@@ -1,5 +1,11 @@
-/** Обёртки над localStorage, которые не падают в приватном режиме и на битом JSON. */
-export function readJson<T>(key: string, isValid: (value: unknown) => value is T): T | null {
+/**
+ * Обёртки над localStorage, которые не падают в приватном режиме
+ * и на битом JSON.
+ */
+export function readJson<T>(
+  key: string,
+  isValid: (value: unknown) => value is T,
+): T | null {
   try {
     const raw = window.localStorage.getItem(key);
     if (raw === null) return null;

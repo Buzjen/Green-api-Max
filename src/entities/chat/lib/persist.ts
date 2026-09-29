@@ -1,9 +1,8 @@
-import { readJson, removeItem, writeJson } from '@/shared/lib/storage';
 import type { Chat } from '../model/types';
 
-const KEY = 'max-chat:chats';
+export const STORAGE_KEY = 'max-chat:chats';
 
-function isChatList(value: unknown): value is Chat[] {
+export function isChatList(value: unknown): value is Chat[] {
   return (
     Array.isArray(value) &&
     value.every(
@@ -15,11 +14,4 @@ function isChatList(value: unknown): value is Chat[] {
         typeof item.title === 'string',
     )
   );
-}
-
-export const loadChats = () => readJson(KEY, isChatList) ?? [];
-
-export function saveChats(chats: Chat[]): void {
-  if (chats.length > 0) writeJson(KEY, chats);
-  else removeItem(KEY);
 }

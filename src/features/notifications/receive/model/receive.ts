@@ -1,6 +1,16 @@
-import { combine, createEffect, createEvent, createStore, sample } from 'effector';
+import {
+  combine,
+  createEffect,
+  createEvent,
+  createStore,
+  sample,
+} from 'effector';
 import { chatModel } from '@/entities/chat';
-import { messageModel, parseNotification, type ParsedNotification } from '@/entities/message';
+import {
+  messageModel,
+  parseNotification,
+  type ParsedNotification,
+} from '@/entities/message';
 import { sessionModel } from '@/entities/session';
 import {
   deleteNotification,
@@ -19,8 +29,9 @@ export const RECEIVE_TIMEOUT = 20;
 export const RETRY_DELAYS = [1000, 2000, 5000];
 
 /**
- * Пустая очередь держит запрос до RECEIVE_TIMEOUT секунд, поэтому «online» — это
- * «ошибок нет», а не «пришёл ответ»; «offline» ставится только после реальной ошибки.
+ * Пустая очередь держит запрос до RECEIVE_TIMEOUT секунд, поэтому
+ * «online» — это «ошибок нет», а не «пришёл ответ»;
+ * «offline» ставится только после реальной ошибки.
  */
 export type ConnectionStatus = 'online' | 'offline';
 
@@ -49,18 +60,20 @@ interface RequestParams extends Tick {
 
 const controllers = new Set<AbortController>();
 
-export const receiveNotificationFx = createEffect(async ({ credentials }: RequestParams) => {
-  const controller = new AbortController();
-  controllers.add(controller);
-  try {
-    return await receiveNotification(credentials, {
-      receiveTimeout: RECEIVE_TIMEOUT,
-      signal: controller.signal,
-    });
-  } finally {
-    controllers.delete(controller);
-  }
-});
+export const receiveNotificationFx = createEffect(
+  async ({ credentials }: RequestParams) => {
+    const controller = new AbortController();
+    controllers.add(controller);
+    try {
+      return await receiveNotification(credentials, {
+        receiveTimeout: RECEIVE_TIMEOUT,
+        signal: controller.signal,
+      });
+    } finally {
+      controllers.delete(controller);
+    }
+  },
+);
 
 export const deleteNotificationFx = createEffect(
   ({ credentials, receiptId }: RequestParams & { receiptId: number }) =>
@@ -68,7 +81,8 @@ export const deleteNotificationFx = createEffect(
 );
 
 export const delayFx = createEffect(
-  ({ ms }: Tick & { ms: number }) => new Promise<void>((resolve) => setTimeout(resolve, ms)),
+  ({ ms }: Tick & { ms: number }) =>
+    new Promise<void>((resolve) => setTimeout(resolve, ms)),
 );
 
 export const abortRequestsFx = createEffect(() => {
@@ -103,13 +117,17 @@ sample({ clock: stopped, target: abortRequestsFx });
 // ---- цикл -----------------------------------------------------------------
 
 /** Шаг цикла актуален, только если поллинг идёт и поколение совпадает. */
-function isCurrent(state: { isPolling: boolean; generation: number }, tick: Tick): boolean {
+function isCurrent(
+  state: { isPolling: boolean; generation: number },
+  tick: Tick,
+): boolean {
   return state.isPolling && state.generation === tick.generation;
 }
 
 const $state = combine({ isPolling: $isPolling, generation: $generation });
 
 const nextPollRequested = createEvent<Tick>();
+const pollRequested = sessionModel.withCredentials(receiveNotificationFx);
 
 sample({
   clock: pollingStarted,
@@ -120,13 +138,10 @@ sample({
 
 sample({
   clock: nextPollRequested,
-  source: { state: $state, credentials: sessionModel.$credentials },
-  filter: ({ state, credentials }, tick) => credentials !== null && isCurrent(state, tick),
-  fn: ({ credentials }, { generation }): RequestParams => ({
-    credentials: credentials!,
-    generation,
-  }),
-  target: receiveNotificationFx,
+  source: $state,
+  filter: isCurrent,
+  fn: (_, { generation }) => ({ generation }),
+  target: pollRequested,
 });
 
 const received = sample({
@@ -150,13 +165,21 @@ sample({
 const notificationReceived = sample({
   clock: received,
   filter: ({ result }) => result !== null,
-  fn: ({ params, result }) => ({ ...params, receiptId: result!.receiptId, body: result!.body }),
+  fn: ({ params, result }) => ({
+    ...params,
+    receiptId: result!.receiptId,
+    body: result!.body,
+  }),
 });
 
 // Удаляем ВСЕГДА, даже если уведомление не удалось разобрать
 sample({
   clock: notificationReceived,
-  fn: ({ credentials, generation, receiptId }) => ({ credentials, generation, receiptId }),
+  fn: ({ credentials, generation, receiptId }) => ({
+    credentials,
+    generation,
+    receiptId,
+  }),
   target: deleteNotificationFx,
 });
 
@@ -171,7 +194,8 @@ sample({
 const receiveFailed = sample({
   clock: receiveNotificationFx.fail,
   source: $state,
-  filter: (state, { params, error }) => isCurrent(state, params) && !isAbortError(error),
+  filter: (state, { params, error }) =>
+    isCurrent(state, params) && !isAbortError(error),
   fn: (_, payload) => payload,
 });
 
@@ -233,13 +257,18 @@ sample({
   fn: ({ parsed: { sender } }) => ({
     chatId: sender.chatId,
     phone: sender.phone,
-    title: sender.name || (sender.phone ? formatPhone(sender.phone) : `Чат ${sender.chatId}`),
+    title:
+      sender.name ||
+      (sender.phone ? formatPhone(sender.phone) : `Чат ${sender.chatId}`),
   }),
   target: chatModel.chatAdded,
 });
 
 sample({
   clock: routed,
-  fn: ({ parsed, chat }) => ({ ...parsed.message, chatId: chat?.chatId ?? parsed.message.chatId }),
+  fn: ({ parsed, chat }) => ({
+    ...parsed.message,
+    chatId: chat?.chatId ?? parsed.message.chatId,
+  }),
   target: messageModel.messageAdded,
 });

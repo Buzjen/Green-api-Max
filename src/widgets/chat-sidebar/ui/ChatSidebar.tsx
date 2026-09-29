@@ -2,37 +2,37 @@ import { useUnit } from 'effector-react';
 import { ChatListItem, chatModel } from '@/entities/chat';
 import { sessionModel } from '@/entities/session';
 import { LogoutButton } from '@/features/auth/logout';
-import { createChatModel, NewChatButton, NewChatForm } from '@/features/chat/create-by-phone';
+import {
+  createChatModel,
+  NewChatButton,
+  NewChatForm,
+} from '@/features/chat/create-by-phone';
+import { formatRecent } from '@/shared/lib/date';
 import { Button, ChatIcon } from '@/shared/ui';
 import { $items } from '../model/sidebar';
 import styles from './ChatSidebar.module.css';
 
-const timeFormat = new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' });
-const dateFormat = new Intl.DateTimeFormat('ru-RU', { day: 'numeric', month: 'short' });
-
-function formatActivity(timestamp: number): string {
-  const date = new Date(timestamp);
-  return date.toDateString() === new Date().toDateString()
-    ? timeFormat.format(date)
-    : dateFormat.format(date);
-}
-
 export function ChatSidebar() {
-  const [items, activeChatId, selectChat, isFormOpen, openForm, credentials] = useUnit([
-    $items,
-    chatModel.$activeChatId,
-    chatModel.chatSelected,
-    createChatModel.$isFormOpen,
-    createChatModel.formOpened,
-    sessionModel.$credentials,
-  ]);
+  const [items, activeChatId, selectChat, isFormOpen, openForm, credentials] =
+    useUnit([
+      $items,
+      chatModel.$activeChatId,
+      chatModel.chatSelected,
+      createChatModel.$isFormOpen,
+      createChatModel.formOpened,
+      sessionModel.$credentials,
+    ]);
 
   return (
     <aside className={styles.sidebar}>
       <header className={styles.header}>
         <div className={styles.heading}>
           <h1 className={styles.title}>Чаты</h1>
-          {credentials && <span className={styles.instance}>Инстанс {credentials.idInstance}</span>}
+          {credentials && (
+            <span className={styles.instance}>
+              Инстанс {credentials.idInstance}
+            </span>
+          )}
         </div>
         <NewChatButton />
         <LogoutButton />
@@ -52,7 +52,7 @@ export function ChatSidebar() {
               chatId={item.chatId}
               title={item.title}
               preview={item.preview}
-              time={formatActivity(item.lastActivity)}
+              time={formatRecent(item.lastActivity)}
               active={item.chatId === activeChatId}
               onSelect={selectChat}
             />

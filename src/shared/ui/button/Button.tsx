@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes } from 'react';
+import { cx } from '@/shared/lib/cx';
 import styles from './Button.module.css';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
@@ -13,8 +14,16 @@ export function Button({
   type = 'button',
   ...props
 }: ButtonProps) {
-  const classes = [styles.button, styles[variant], block && styles.block, className]
-    .filter(Boolean)
-    .join(' ');
-  return <button type={type} className={classes} {...props} />;
+  return (
+    <button
+      type={type}
+      className={cx(
+        styles.button,
+        styles[variant],
+        block && styles.block,
+        className,
+      )}
+      {...props}
+    />
+  );
 }

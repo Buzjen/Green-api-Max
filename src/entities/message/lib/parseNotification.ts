@@ -14,12 +14,14 @@ export interface ParsedNotification {
 
 const DIRECTION_BY_TYPE: Record<string, Message['direction']> = {
   incomingMessageReceived: 'incoming',
-  // сообщение, отправленное с телефона; отправленные через API (outgoingAPIMessageReceived)
-  // уже есть в ленте, поэтому игнорируются
+  // сообщение, отправленное с телефона; отправленные через API
+  // (outgoingAPIMessageReceived) уже есть в ленте, поэтому игнорируются
   outgoingMessageReceived: 'outgoing',
 };
 
-function extractText(messageData: NotificationBody['messageData']): string | null {
+function extractText(
+  messageData: NotificationBody['messageData'],
+): string | null {
   switch (messageData?.typeMessage) {
     case 'textMessage':
       return messageData.textMessageData?.textMessage ?? null;

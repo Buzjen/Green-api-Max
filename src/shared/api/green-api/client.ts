@@ -23,12 +23,17 @@ interface RequestOptions {
   signal?: AbortSignal;
 }
 
-export function buildUrl(credentials: ApiCredentials, options: RequestOptions): string {
+export function buildUrl(
+  credentials: ApiCredentials,
+  options: RequestOptions,
+): string {
   const base = credentials.apiUrl.replace(/\/+$/, '');
-  const suffix = options.pathSuffix ? `/${encodeURIComponent(options.pathSuffix)}` : '';
-  const url =
-    `${base}/waInstance${encodeURIComponent(credentials.idInstance)}` +
-    `/${options.apiMethod}/${encodeURIComponent(credentials.apiTokenInstance)}${suffix}`;
+  const suffix = options.pathSuffix
+    ? `/${encodeURIComponent(options.pathSuffix)}`
+    : '';
+  const id = encodeURIComponent(credentials.idInstance);
+  const token = encodeURIComponent(credentials.apiTokenInstance);
+  const url = `${base}/waInstance${id}/${options.apiMethod}/${token}${suffix}`;
 
   if (!options.query) return url;
   const params = new URLSearchParams(
@@ -47,7 +52,10 @@ export async function request<T>(
 ): Promise<T | null> {
   const response = await fetch(buildUrl(credentials, options), {
     method: options.method,
-    headers: options.body === undefined ? undefined : { 'Content-Type': 'application/json' },
+    headers:
+      options.body === undefined
+        ? undefined
+        : { 'Content-Type': 'application/json' },
     body: options.body === undefined ? undefined : JSON.stringify(options.body),
     signal: options.signal,
   });

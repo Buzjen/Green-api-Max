@@ -1,16 +1,24 @@
 import { useUnit } from 'effector-react';
 import type { ChangeEvent, FormEvent } from 'react';
-import { Button, Input } from '@/shared/ui';
+import { Button, ErrorText, Input } from '@/shared/ui';
 import type { LoginFormValues } from '../lib/validate';
 import { $error, $values, fieldChanged, loginSubmitted } from '../model/login';
 import styles from './LoginForm.module.css';
 
 export function LoginForm() {
-  const [values, error, change, submit] = useUnit([$values, $error, fieldChanged, loginSubmitted]);
+  const [values, error, change, submit] = useUnit([
+    $values,
+    $error,
+    fieldChanged,
+    loginSubmitted,
+  ]);
   const { idInstance, apiTokenInstance, apiUrl } = values;
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) =>
-    change({ name: event.target.name as keyof LoginFormValues, value: event.target.value });
+    change({
+      name: event.target.name as keyof LoginFormValues,
+      value: event.target.value,
+    });
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -49,11 +57,7 @@ export function LoginForm() {
           onChange={handleChange}
         />
       </details>
-      {error && (
-        <p className={styles.error} role="alert">
-          {error}
-        </p>
-      )}
+      <ErrorText>{error}</ErrorText>
       <Button type="submit" block disabled={!idInstance || !apiTokenInstance}>
         Войти
       </Button>

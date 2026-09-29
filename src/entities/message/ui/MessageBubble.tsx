@@ -1,8 +1,8 @@
+import { formatTime } from '@/shared/lib/date';
 import { RetryIcon } from '@/shared/ui';
 import type { Message } from '../model/types';
+import { cx } from '@/shared/lib/cx';
 import styles from './MessageBubble.module.css';
-
-const timeFormat = new Intl.DateTimeFormat('ru-RU', { hour: '2-digit', minute: '2-digit' });
 
 const STATUS_LABEL: Record<Message['status'], string> = {
   sending: '🕓',
@@ -19,11 +19,18 @@ interface MessageBubbleProps {
 export function MessageBubble({ message, onRetry }: MessageBubbleProps) {
   const outgoing = message.direction === 'outgoing';
   return (
-    <div className={`${styles.row} ${outgoing ? styles.outgoing : styles.incoming}`}>
-      <div className={`${styles.bubble} ${message.status === 'error' ? styles.error : ''}`}>
+    <div
+      className={cx(styles.row, outgoing ? styles.outgoing : styles.incoming)}
+    >
+      <div
+        className={cx(
+          styles.bubble,
+          message.status === 'error' && styles.error,
+        )}
+      >
         <span className={styles.text}>{message.text}</span>
         <span className={styles.meta}>
-          {timeFormat.format(message.timestamp)}
+          {formatTime(message.timestamp)}
           {outgoing && (
             <span
               className={styles.status}

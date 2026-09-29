@@ -4,8 +4,7 @@ import { chatModel } from '@/entities/chat';
 import { messageModel } from '@/entities/message';
 import { sessionModel } from '@/entities/session';
 import { messageSendRequested, retryRequested, sendMessageFx } from './send';
-
-const credentials = { apiUrl: 'https://x', idInstance: '1', apiTokenInstance: 't' };
+import { testCredentials as credentials } from '@/shared/lib/testing';
 
 describe('send message', () => {
   it('добавляет сообщение оптимистично и помечает отправленным', async () => {
@@ -20,9 +19,16 @@ describe('send message', () => {
 
     await allSettled(messageSendRequested, { scope, params: '  Привет  ' });
 
-    expect(send).toHaveBeenCalledWith(expect.objectContaining({ chatId: '100', text: 'Привет' }));
+    expect(send).toHaveBeenCalledWith(
+      expect.objectContaining({ chatId: '100', text: 'Привет' }),
+    );
     expect(scope.getState(messageModel.$messagesByChat)['100']).toMatchObject([
-      { text: 'Привет', direction: 'outgoing', status: 'sent', idMessage: 'srv-1' },
+      {
+        text: 'Привет',
+        direction: 'outgoing',
+        status: 'sent',
+        idMessage: 'srv-1',
+      },
     ]);
   });
 

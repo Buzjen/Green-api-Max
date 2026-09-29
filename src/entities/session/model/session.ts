@@ -1,9 +1,19 @@
-import { createEffect, createEvent, createStore, sample } from 'effector';
+import {
+  createEvent,
+  createStore,
+  sample,
+  type EventCallable,
+  type UnitTargetable,
+} from 'effector';
 import type { ApiCredentials } from '@/shared/api';
-import { loadCredentials, saveCredentials } from '../lib/persist';
+import { persist } from '@/shared/lib/storage';
+import { isCredentials, STORAGE_KEY } from '../lib/persist';
 
 export const sessionStarted = createEvent<ApiCredentials>();
-/** Креды отклонены API: сессия сбрасывается, причина показывается на форме входа. */
+/**
+ * Креды отклонены API: сессия сбрасывается,
+ * причина показывается на форме входа.
+ */
 export const sessionFailed = createEvent<string>();
 export const reset = createEvent();
 export const restoreRequested = createEvent();
@@ -18,15 +28,30 @@ export const $sessionError = createStore<string | null>(null)
   .on(sessionFailed, (_, reason) => reason)
   .reset(sessionStarted, reset);
 
-const loadFx = createEffect(loadCredentials);
-const saveFx = createEffect(saveCredentials);
-
-sample({ clock: restoreRequested, target: loadFx });
-
-sample({
-  clock: loadFx.doneData,
-  filter: (credentials): credentials is ApiCredentials => credentials !== null,
-  target: sessionStarted,
+const restored = persist({
+  store: $credentials,
+  key: STORAGE_KEY,
+  pickup: restoreRequested,
+  isValid: isCredentials,
+  isEmpty: (credentials) => credentials === null,
 });
 
-sample({ clock: $credentials.updates, target: saveFx });
+sample({ clock: restored, filter: Boolean, target: sessionStarted });
+
+/**
+ * Событие, которое вызывает эффект с кредами текущей сессии.
+ * Без активной сессии вызов игнорируется.
+ */
+export function withCredentials<Params extends { credentials: ApiCredentials }>(
+  fx: UnitTargetable<Params>,
+): EventCallable<Omit<Params, 'credentials'>> {
+  const called = createEvent<Omit<Params, 'credentials'>>();
+  sample({
+    clock: called,
+    source: $credentials,
+    filter: Boolean,
+    fn: (credentials, params) => ({ ...params, credentials }) as Params,
+    target: fx,
+  });
+  return called;
+}

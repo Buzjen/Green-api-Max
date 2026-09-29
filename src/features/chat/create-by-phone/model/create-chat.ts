@@ -1,7 +1,11 @@
 import { createEffect, createEvent, createStore, sample } from 'effector';
-import { chatModel } from '@/entities/chat';
+import { chatModel, findChatByPhone } from '@/entities/chat';
 import { sessionModel } from '@/entities/session';
-import { checkAccount, describeApiError, type ApiCredentials } from '@/shared/api';
+import {
+  checkAccount,
+  describeApiError,
+  type ApiCredentials,
+} from '@/shared/api';
 import { formatPhone, normalizePhone } from '@/shared/lib/phone';
 
 export const formOpened = createEvent();
@@ -12,6 +16,8 @@ export const checkAccountFx = createEffect(
   ({ credentials, phone }: { credentials: ApiCredentials; phone: string }) =>
     checkAccount(credentials, { phoneNumber: Number(phone) }),
 );
+
+const checkAccountRequested = sessionModel.withCredentials(checkAccountFx);
 
 export const $isFormOpen = createStore(false)
   .on(formOpened, () => true)
@@ -41,20 +47,24 @@ const validPhone = sample({
   filter: (phone): phone is string => phone !== null,
 });
 
-const existingChatFound = sample({
+const lookedUp = sample({
   clock: validPhone,
   source: chatModel.$chats,
-  filter: (chats, phone) => chats.some((chat) => chat.phone === phone),
-  fn: (chats, phone) => chats.find((chat) => chat.phone === phone)!.chatId,
+  fn: (chats, phone) => ({ phone, chat: findChatByPhone(chats, phone) }),
+});
+
+// Чат с этим номером уже есть — CheckAccount не нужен
+const existingChatFound = sample({
+  clock: lookedUp,
+  filter: ({ chat }) => chat !== null,
+  fn: ({ chat }) => chat!.chatId,
 });
 
 sample({
-  clock: validPhone,
-  source: { chats: chatModel.$chats, credentials: sessionModel.$credentials },
-  filter: ({ chats, credentials }, phone) =>
-    credentials !== null && !chats.some((chat) => chat.phone === phone),
-  fn: ({ credentials }, phone) => ({ credentials: credentials!, phone }),
-  target: checkAccountFx,
+  clock: lookedUp,
+  filter: ({ chat }) => chat === null,
+  fn: ({ phone }) => ({ phone }),
+  target: checkAccountRequested,
 });
 
 sample({
@@ -74,7 +84,8 @@ const accountFound = sample({
   }),
 });
 
-// Чат с таким chatId мог появиться раньше из входящих — тогда только дополняем выбор.
+// Чат с таким chatId мог появиться раньше из входящих —
+// тогда chatAdded ничего не меняет, и чат просто выбирается
 sample({ clock: accountFound, target: chatModel.chatAdded });
 
 const chatReady = sample({

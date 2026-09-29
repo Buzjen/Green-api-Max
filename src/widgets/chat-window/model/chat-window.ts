@@ -7,5 +7,6 @@ const EMPTY: Message[] = [];
 export const $activeMessages = combine(
   chatModel.$activeChatId,
   messageModel.$messagesByChat,
-  (chatId, messagesByChat) => (chatId ? (messagesByChat[chatId] ?? EMPTY) : EMPTY),
+  (chatId, messagesByChat) =>
+    chatId ? (messagesByChat[chatId] ?? EMPTY) : EMPTY,
 );

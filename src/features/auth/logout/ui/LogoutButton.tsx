@@ -8,7 +8,12 @@ export function LogoutButton() {
     <Button
       variant="icon"
       onClick={() => {
-        if (window.confirm('Выйти? История чатов на этом устройстве будет удалена.')) logout();
+        if (
+          window.confirm(
+            'Выйти? История чатов на этом устройстве будет удалена.',
+          )
+        )
+          logout();
       }}
       title="Выйти"
       aria-label="Выйти"

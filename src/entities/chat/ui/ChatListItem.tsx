@@ -1,4 +1,5 @@
 import { Avatar } from '@/shared/ui';
+import { cx } from '@/shared/lib/cx';
 import styles from './ChatListItem.module.css';
 
 interface ChatListItemProps {
@@ -21,7 +22,7 @@ export function ChatListItem({
   return (
     <button
       type="button"
-      className={`${styles.item} ${active ? styles.active : ''}`}
+      className={cx(styles.item, active && styles.active)}
       onClick={() => onSelect(chatId)}
       aria-current={active}
     >

@@ -1,1 +1,1 @@
-export { readJson, removeItem, writeJson } from './storage';
+export { persist } from './persist';

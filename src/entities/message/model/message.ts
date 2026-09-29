@@ -1,5 +1,10 @@
-import { createEffect, createEvent, createStore, sample } from 'effector';
-import { loadMessages, saveMessages } from '../lib/persist';
+import { createEvent, createStore } from 'effector';
+import { persist } from '@/shared/lib/storage';
+import {
+  isMessagesByChat,
+  serializeMessages,
+  STORAGE_KEY,
+} from '../lib/persist';
 import type { Message, MessagesByChat, MessageStatus } from './types';
 
 export const messageAdded = createEvent<Message>();
@@ -11,9 +16,6 @@ export const messageStatusUpdated = createEvent<{
 }>();
 export const reset = createEvent();
 export const restoreRequested = createEvent();
-
-const loadFx = createEffect(loadMessages);
-const saveFx = createEffect(saveMessages);
 
 function isDuplicate(messages: Message[], message: Message): boolean {
   return messages.some(
@@ -41,15 +43,26 @@ export const $messagesByChat = createStore<MessagesByChat>({})
       ),
     };
   })
-  .on(loadFx.doneData, (current, restored) => {
-    const merged: MessagesByChat = { ...restored };
-    for (const [chatId, messages] of Object.entries(current)) {
-      const base = merged[chatId] ?? [];
-      merged[chatId] = [...base, ...messages.filter((message) => !isDuplicate(base, message))];
-    }
-    return merged;
-  })
   .reset(reset);
 
-sample({ clock: restoreRequested, target: loadFx });
-sample({ clock: $messagesByChat.updates, target: saveFx });
+const restored = persist({
+  store: $messagesByChat,
+  key: STORAGE_KEY,
+  pickup: restoreRequested,
+  isValid: isMessagesByChat,
+  isEmpty: (messagesByChat) => Object.keys(messagesByChat).length === 0,
+  serialize: serializeMessages,
+});
+
+// Сообщения, пришедшие до восстановления, не теряются
+$messagesByChat.on(restored, (current, saved) => {
+  const merged: MessagesByChat = { ...saved };
+  for (const [chatId, messages] of Object.entries(current)) {
+    const base = merged[chatId] ?? [];
+    merged[chatId] = [
+      ...base,
+      ...messages.filter((message) => !isDuplicate(base, message)),
+    ];
+  }
+  return merged;
+});

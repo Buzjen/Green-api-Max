@@ -1,4 +1,5 @@
 import { forwardRef, useId, type InputHTMLAttributes } from 'react';
+import { cx } from '@/shared/lib/cx';
 import styles from './Input.module.css';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -13,7 +14,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   const generatedId = useId();
   const inputId = id ?? generatedId;
   return (
-    <label className={[styles.field, className].filter(Boolean).join(' ')} htmlFor={inputId}>
+    <label className={cx(styles.field, className)} htmlFor={inputId}>
       {label && <span className={styles.label}>{label}</span>}
       <input ref={ref} id={inputId} className={styles.input} {...props} />
       {hint && <span className={styles.hint}>{hint}</span>}

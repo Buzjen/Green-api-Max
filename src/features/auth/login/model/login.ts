@@ -3,10 +3,17 @@ import { sessionModel } from '@/entities/session';
 import { resolveApiUrl } from '@/shared/config';
 import { validateLogin, type LoginFormValues } from '../lib/validate';
 
-export const fieldChanged = createEvent<{ name: keyof LoginFormValues; value: string }>();
+export const fieldChanged = createEvent<{
+  name: keyof LoginFormValues;
+  value: string;
+}>();
 export const loginSubmitted = createEvent();
 
-const INITIAL: LoginFormValues = { idInstance: '', apiTokenInstance: '', apiUrl: '' };
+const INITIAL: LoginFormValues = {
+  idInstance: '',
+  apiTokenInstance: '',
+  apiUrl: '',
+};
 
 /**
  * Значения живут в модели, а не в компоненте: если API отклонит креды,

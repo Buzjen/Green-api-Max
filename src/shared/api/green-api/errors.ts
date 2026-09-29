@@ -4,7 +4,8 @@ import { ApiError } from './client';
 export function isSessionError(error: unknown): boolean {
   if (!(error instanceof ApiError)) return false;
   if (error.status === 401 || error.status === 403) return true;
-  // 400 на receiveNotification — неверные параметры инстанса или задан webhookUrl
+  // 400 на receiveNotification — неверные параметры инстанса
+  // или задан webhookUrl
   return error.status === 400;
 }
 
@@ -12,7 +13,8 @@ export function isSessionError(error: unknown): boolean {
 export function describeApiError(error: unknown): string {
   if (error instanceof ApiError) {
     const body = error.body.toLowerCase();
-    if (body.includes('webhook')) return 'Очистите webhookUrl в личном кабинете GREEN-API';
+    if (body.includes('webhook'))
+      return 'Очистите webhookUrl в личном кабинете GREEN-API';
     if (body.includes('suspended'))
       return 'Аккаунт GREEN-API заблокирован (Your account is suspended)';
     switch (error.status) {

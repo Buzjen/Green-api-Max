@@ -9,8 +9,7 @@ import {
   checkAccountFx,
   formOpened,
 } from './create-chat';
-
-const credentials = { apiUrl: 'https://x', idInstance: '1', apiTokenInstance: 't' };
+import { testCredentials as credentials } from '@/shared/lib/testing';
 
 function setup(result: { exist: boolean; chatId: string }) {
   const check = vi.fn(async () => ({ ...result, fromCache: false }));
@@ -25,7 +24,10 @@ describe('create chat by phone', () => {
   it('создаёт и выбирает чат по chatId из CheckAccount', async () => {
     const { scope, check } = setup({ exist: true, chatId: '10000000' });
     await allSettled(formOpened, { scope });
-    await allSettled(chatCreateRequested, { scope, params: '8 (999) 123-45-67' });
+    await allSettled(chatCreateRequested, {
+      scope,
+      params: '8 (999) 123-45-67',
+    });
 
     expect(check).toHaveBeenCalledWith({ credentials, phone: '79991234567' });
     expect(scope.getState(chatModel.$chats)).toMatchObject([

@@ -11,7 +11,11 @@ export function LoginPage() {
         <h1 className={styles.title}>Веб-чат MAX</h1>
         <p className={styles.subtitle}>
           Введите параметры инстанса из{' '}
-          <a href="https://console.green-api.com" target="_blank" rel="noreferrer">
+          <a
+            href="https://console.green-api.com"
+            target="_blank"
+            rel="noreferrer"
+          >
             личного кабинета GREEN-API
           </a>
         </p>

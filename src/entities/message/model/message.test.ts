@@ -17,7 +17,10 @@ describe('message model', () => {
   it('не добавляет дубликаты по idMessage', async () => {
     const scope = fork();
     await allSettled(messageAdded, { scope, params: incoming });
-    await allSettled(messageAdded, { scope, params: { ...incoming, id: 'other' } });
+    await allSettled(messageAdded, {
+      scope,
+      params: { ...incoming, id: 'other' },
+    });
     expect(scope.getState($messagesByChat)['100']).toHaveLength(1);
   });
 
@@ -25,7 +28,13 @@ describe('message model', () => {
     const scope = fork();
     await allSettled(messageAdded, {
       scope,
-      params: { ...incoming, id: 'tmp', idMessage: null, direction: 'outgoing', status: 'sending' },
+      params: {
+        ...incoming,
+        id: 'tmp',
+        idMessage: null,
+        direction: 'outgoing',
+        status: 'sending',
+      },
     });
     await allSettled(messageStatusUpdated, {
       scope,
@@ -33,11 +42,20 @@ describe('message model', () => {
     });
     await allSettled(messageAdded, {
       scope,
-      params: { ...incoming, id: 'srv-1', idMessage: 'srv-1', direction: 'outgoing' },
+      params: {
+        ...incoming,
+        id: 'srv-1',
+        idMessage: 'srv-1',
+        direction: 'outgoing',
+      },
     });
 
     const messages = scope.getState($messagesByChat)['100'];
     expect(messages).toHaveLength(1);
-    expect(messages[0]).toMatchObject({ id: 'tmp', idMessage: 'srv-1', status: 'sent' });
+    expect(messages[0]).toMatchObject({
+      id: 'tmp',
+      idMessage: 'srv-1',
+      status: 'sent',
+    });
   });
 });

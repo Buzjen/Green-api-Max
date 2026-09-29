@@ -4,15 +4,19 @@ import { ConnectionBadge } from '@/features/notifications/receive';
 import { MessageInput } from '@/features/message/send';
 import { formatPhone } from '@/shared/lib/phone';
 import { Avatar, BackIcon, Button, ChatIcon } from '@/shared/ui';
+import { cx } from '@/shared/lib/cx';
 import styles from './ChatWindow.module.css';
 import { MessageList } from './MessageList';
 
 export function ChatWindow() {
-  const [chat, selectChat] = useUnit([chatModel.$activeChat, chatModel.chatSelected]);
+  const [chat, selectChat] = useUnit([
+    chatModel.$activeChat,
+    chatModel.chatSelected,
+  ]);
 
   if (!chat) {
     return (
-      <section className={`${styles.window} ${styles.placeholder}`}>
+      <section className={cx(styles.window, styles.placeholder)}>
         <ChatIcon width={48} height={48} />
         <p>Выберите чат или создайте новый</p>
       </section>

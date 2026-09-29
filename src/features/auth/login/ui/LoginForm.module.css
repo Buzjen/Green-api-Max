@@ -14,12 +14,3 @@
 .advanced[open] summary {
   margin-bottom: 12px;
 }
-
-.error {
-  margin: 0;
-  padding: 10px 12px;
-  border-radius: 10px;
-  background: var(--color-danger-soft);
-  color: var(--color-danger);
-  font-size: 14px;
-}

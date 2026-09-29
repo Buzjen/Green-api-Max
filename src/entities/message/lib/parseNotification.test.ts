@@ -16,7 +16,10 @@ describe('parseNotification', () => {
       timestamp: 1763115112,
       idMessage: '1265',
       senderData,
-      messageData: { typeMessage: 'textMessage', textMessageData: { textMessage: 'Привет' } },
+      messageData: {
+        typeMessage: 'textMessage',
+        textMessageData: { textMessage: 'Привет' },
+      },
     };
 
     expect(parseNotification(body)).toEqual({
@@ -53,7 +56,10 @@ describe('parseNotification', () => {
       timestamp: 1,
       idMessage: '3',
       senderData: { ...senderData, senderName: 'Я' },
-      messageData: { typeMessage: 'textMessage', textMessageData: { textMessage: 'Ок' } },
+      messageData: {
+        typeMessage: 'textMessage',
+        textMessageData: { textMessage: 'Ок' },
+      },
     });
     expect(parsed?.message.direction).toBe('outgoing');
     expect(parsed?.sender.phone).toBe('');
@@ -68,7 +74,10 @@ describe('parseNotification', () => {
         typeWebhook: 'outgoingAPIMessageReceived',
         idMessage: '4',
         senderData,
-        messageData: { typeMessage: 'textMessage', textMessageData: { textMessage: 'x' } },
+        messageData: {
+          typeMessage: 'textMessage',
+          textMessageData: { textMessage: 'x' },
+        },
       },
     ],
     [
@@ -85,7 +94,10 @@ describe('parseNotification', () => {
       {
         typeWebhook: 'incomingMessageReceived',
         idMessage: '6',
-        messageData: { typeMessage: 'textMessage', textMessageData: { textMessage: 'x' } },
+        messageData: {
+          typeMessage: 'textMessage',
+          textMessageData: { textMessage: 'x' },
+        },
       },
     ],
   ])('возвращает null: %s', (_, body) => {

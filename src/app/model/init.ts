@@ -2,7 +2,8 @@ import { createEvent, sample } from 'effector';
 import { chatModel } from '@/entities/chat';
 import { messageModel } from '@/entities/message';
 import { sessionModel } from '@/entities/session';
-// Цикл получения подписан на sessionStarted — модель должна быть загружена до восстановления сессии
+// Цикл получения подписан на sessionStarted: модель должна быть загружена
+// до восстановления сессии
 import '@/features/notifications/receive';
 
 export const appStarted = createEvent();

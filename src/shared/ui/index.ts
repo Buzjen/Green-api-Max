@@ -9,5 +9,6 @@ export {
   RetryIcon,
   SendIcon,
 } from './icons/icons';
+export { ErrorText } from './error-text/ErrorText';
 export { Input } from './input/Input';
 export { Spinner } from './spinner/Spinner';

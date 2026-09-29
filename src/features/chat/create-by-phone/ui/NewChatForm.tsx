@@ -1,7 +1,12 @@
 import { useUnit } from 'effector-react';
 import { useState, type FormEvent } from 'react';
-import { Button, CloseIcon, Input, Spinner } from '@/shared/ui';
-import { $error, $pending, chatCreateRequested, formClosed } from '../model/create-chat';
+import { Button, CloseIcon, ErrorText, Input, Spinner } from '@/shared/ui';
+import {
+  $error,
+  $pending,
+  chatCreateRequested,
+  formClosed,
+} from '../model/create-chat';
 import styles from './NewChatForm.module.css';
 
 export function NewChatForm() {
@@ -36,11 +41,7 @@ export function NewChatForm() {
         onChange={(event) => setPhone(event.target.value)}
         autoFocus
       />
-      {error && (
-        <p className={styles.error} role="alert">
-          {error}
-        </p>
-      )}
+      <ErrorText>{error}</ErrorText>
       <Button type="submit" block disabled={pending || !phone.trim()}>
         {pending ? <Spinner /> : 'Создать чат'}
       </Button>
