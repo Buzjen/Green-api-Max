@@ -16,7 +16,7 @@ npm run format               # prettier (singleQuote, printWidth 80)
 npm run build                # tsc -b && vite build → dist/
 ```
 
-Перед коммитом прогоняйте `npx tsc -b`, `npm test` и `npm run lint`. Если меняете зависимости, обновляйте `package-lock.json`: CI использует `npm ci`, и при рассинхроне lock-файла падает.
+Перед коммитом прогоняйте `npx tsc -b`, `npm test` и `npm run lint`. Если меняете зависимости, обновляйте `package-lock.json`: CI использует `npm ci`, и при рассинхроне lock-файла падает. Lock-файл генерирует npm 11 (Node 24), и CI запускается на той же версии: npm 10 не принимает такой lock-файл из-за optional peer-зависимостей `@emnapi/*`.
 
 ## Деплой
 
