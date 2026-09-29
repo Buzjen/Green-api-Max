@@ -17,16 +17,4 @@ describe('resolveApiUrl', () => {
       'https://7105.api.green-api.com',
     );
   });
-
-  it('подставляет кластер в шаблон из env', () => {
-    expect(
-      resolveApiUrl('3100123456', '', 'https://{cluster}.example.com/'),
-    ).toBe('https://3100.example.com');
-  });
-
-  it('использует шаблон без плейсхолдера как есть', () => {
-    expect(resolveApiUrl('3100123456', '', 'https://proxy.example.com')).toBe(
-      'https://proxy.example.com',
-    );
-  });
 });

@@ -18,10 +18,6 @@ npm run build                # tsc -b && vite build → dist/
 
 Перед коммитом прогоняйте `npx tsc -b`, `npm test` и `npm run lint`. Если меняете зависимости, обновляйте `package-lock.json`: CI использует `npm ci`, и при рассинхроне lock-файла падает.
 
-## Переменные окружения
-
-`VITE_GREEN_API_URL` — шаблон адреса API с плейсхолдером `{cluster}`, описан в `.env.example`. Переменная читается только в `shared/config/env.ts`, а типы объявлены в `src/vite-env.d.ts`. В коде должно быть значение по умолчанию: CI собирает проект без `.env`. `resolveApiUrl` принимает шаблон третьим аргументом, поэтому в тестах env не нужен.
-
 ## Деплой
 
 `.github/workflows/deploy.yml` на каждый пуш в `main` прогоняет тесты, собирает проект с `--base=/<имя репозитория>/` и публикует его в GitHub Pages (https://buzjen.github.io/Green-api-Max/). В `vite.config.ts` `base` не задан намеренно: тогда локальный dev работает из корня.
