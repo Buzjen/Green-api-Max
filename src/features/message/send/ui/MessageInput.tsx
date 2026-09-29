@@ -11,6 +11,9 @@ import {
   Textarea,
 } from './MessageInput.styles';
 
+/** За сколько символов до лимита показывать счётчик. */
+const COUNTER_THRESHOLD = 500;
+
 export function MessageInput() {
   const send = useUnit(messageSendRequested);
   const [text, setText] = useState('');
@@ -57,7 +60,7 @@ export function MessageInput() {
           onKeyDown={handleKeyDown}
           autoFocus
         />
-        {text.length > MAX_MESSAGE_LENGTH - 500 && (
+        {text.length > MAX_MESSAGE_LENGTH - COUNTER_THRESHOLD && (
           <Counter data-over={tooLong}>
             {text.length}/{MAX_MESSAGE_LENGTH}
           </Counter>

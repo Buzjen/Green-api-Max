@@ -10,6 +10,8 @@ import {
   Text,
 } from './MessageBubble.styles';
 
+const RETRY_ICON_SIZE = 16;
+
 const STATUS_LABEL: Record<Message['status'], string> = {
   sending: '🕓',
   sent: '✓',
@@ -46,7 +48,7 @@ export function MessageBubble({ message, onRetry }: MessageBubbleProps) {
           onClick={() => onRetry(message)}
           title="Отправить ещё раз"
         >
-          <RetryIcon width={16} height={16} />
+          <RetryIcon width={RETRY_ICON_SIZE} height={RETRY_ICON_SIZE} />
         </RetryButton>
       )}
     </Row>

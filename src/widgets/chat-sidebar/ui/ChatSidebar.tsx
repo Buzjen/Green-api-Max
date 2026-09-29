@@ -22,6 +22,8 @@ import {
   Title,
 } from './ChatSidebar.styles';
 
+const EMPTY_ICON_SIZE = 40;
+
 export function ChatSidebar() {
   const [items, activeChatId, selectChat, isFormOpen, openForm, credentials] =
     useUnit([
@@ -67,7 +69,7 @@ export function ChatSidebar() {
       ) : (
         !isFormOpen && (
           <Empty>
-            <ChatIcon width={40} height={40} />
+            <ChatIcon width={EMPTY_ICON_SIZE} height={EMPTY_ICON_SIZE} />
             <EmptyText>Чатов пока нет</EmptyText>
             <Button variant="secondary" onClick={openForm}>
               Новый чат

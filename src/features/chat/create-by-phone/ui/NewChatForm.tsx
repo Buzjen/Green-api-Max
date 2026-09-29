@@ -9,6 +9,8 @@ import {
 } from '../model/create-chat';
 import { Form, Header, Title } from './NewChatForm.styles';
 
+const CLOSE_ICON_SIZE = 18;
+
 export function NewChatForm() {
   const [error, pending, create, close] = useUnit([
     $error,
@@ -28,7 +30,7 @@ export function NewChatForm() {
       <Header>
         <Title>Новый чат</Title>
         <Button variant="icon" onClick={close} title="Закрыть">
-          <CloseIcon width={18} height={18} />
+          <CloseIcon width={CLOSE_ICON_SIZE} height={CLOSE_ICON_SIZE} />
         </Button>
       </Header>
       <Input

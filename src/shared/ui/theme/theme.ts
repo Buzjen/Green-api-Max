@@ -58,8 +58,10 @@ const dark: Partial<Record<Token, string>> = {
   shadowCard: '0 8px 32px rgba(0, 0, 0, 0.4)',
 };
 
+const UPPERCASE_LETTER = /[A-Z]/g;
+
 const varName = (token: string) =>
-  `--${token.replace(/[A-Z]/g, (char) => `-${char.toLowerCase()}`)}`;
+  `--${token.replace(UPPERCASE_LETTER, (char) => `-${char.toLowerCase()}`)}`;
 
 const declare = (values: Partial<Record<Token, string>>) =>
   Object.entries(values)

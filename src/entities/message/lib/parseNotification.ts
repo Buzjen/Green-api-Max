@@ -12,6 +12,8 @@ export interface ParsedNotification {
   };
 }
 
+const MS_IN_SECOND = 1000;
+
 const DIRECTION_BY_TYPE: Record<string, Message['direction']> = {
   incomingMessageReceived: 'incoming',
   // сообщение, отправленное с телефона; отправленные через API
@@ -59,7 +61,7 @@ export function parseNotification(
       idMessage: body.idMessage,
       chatId,
       text,
-      timestamp: body.timestamp ? body.timestamp * 1000 : Date.now(),
+      timestamp: body.timestamp ? body.timestamp * MS_IN_SECOND : Date.now(),
       direction,
       status: direction === 'incoming' ? 'received' : 'sent',
     },

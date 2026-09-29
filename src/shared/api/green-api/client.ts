@@ -1,5 +1,7 @@
 import type { ApiCredentials } from './types';
 
+const TRAILING_SLASHES = /\/+$/;
+
 export class ApiError extends Error {
   readonly status: number;
   readonly body: string;
@@ -27,7 +29,7 @@ export function buildUrl(
   credentials: ApiCredentials,
   options: RequestOptions,
 ): string {
-  const base = credentials.apiUrl.replace(/\/+$/, '');
+  const base = credentials.apiUrl.replace(TRAILING_SLASHES, '');
   const suffix = options.pathSuffix
     ? `/${encodeURIComponent(options.pathSuffix)}`
     : '';

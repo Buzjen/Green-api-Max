@@ -15,6 +15,9 @@ import {
   Title,
   Window,
 } from './ChatWindow.styles';
+
+const PLACEHOLDER_ICON_SIZE = 48;
+const AVATAR_SIZE = 40;
 import { MessageList } from './MessageList';
 
 export function ChatWindow() {
@@ -26,7 +29,10 @@ export function ChatWindow() {
   if (!chat) {
     return (
       <Placeholder>
-        <ChatIcon width={48} height={48} />
+        <ChatIcon
+          width={PLACEHOLDER_ICON_SIZE}
+          height={PLACEHOLDER_ICON_SIZE}
+        />
         <Pill>Выберите чат или создайте новый</Pill>
       </Placeholder>
     );
@@ -46,7 +52,7 @@ export function ChatWindow() {
             <BackIcon />
           </Button>
         </BackSlot>
-        <Avatar name={chat.title} seed={chat.chatId} size={40} />
+        <Avatar name={chat.title} seed={chat.chatId} size={AVATAR_SIZE} />
         <Info>
           <Title>{chat.title}</Title>
           <Subtitle>
